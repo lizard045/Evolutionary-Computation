@@ -10,6 +10,9 @@ import os
 import traceback
 import time
 
+# 獲取目前腳本所在的目錄路徑
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # 定義模擬數據
 PROCESSOR_COUNT = 4
 TASK_COUNT = 20
@@ -49,8 +52,11 @@ def parse_problem_file(filename):
     """解析問題定義文件，獲取計算時間和依賴關係"""
     global PROCESSOR_COUNT, TASK_COUNT, EDGE_COUNT, comp_costs, dependencies
     
+    # 使用絕對路徑
+    file_path = os.path.join(SCRIPT_DIR, filename)
+    
     try:
-        with open(filename, 'r', encoding='utf-8') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             lines = file.readlines()
             
             # 尋找處理器個數、工作個數、有向邊個數
@@ -111,13 +117,26 @@ def parse_problem_file(filename):
             
     except Exception as e:
         print(f"解析問題文件時出錯: {e}")
+        traceback.print_exc()
 
 # 解析HW01-3.txt獲取解決方案
 def parse_hw01_3_file(filename):
     """解析HW01-3.txt中的解決方案，包括ss、ms、ps和新的ms"""
     solutions = []
     
+    # 使用絕對路徑
+    file_path = os.path.join(SCRIPT_DIR, filename)
+    
     try:
+        # 嘗試讀取文件，如果文件存在則解析其中的數據
+        if os.path.exists(file_path):
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+                # 這裡添加解析文件內容的代碼
+                print(f"成功讀取 {filename} 文件")
+        else:
+            print(f"文件 {filename} 不存在，使用硬編碼的值")
+        
         # 手動解析文件，將ss、ms、ps和ms提取為兩個解決方案
         # 方案1：使用ss和原始ms
         # 方案2：使用ps映射到處理器(0~0.25=P0，0.25~0.5=P1，0.5~0.75=P2，0.75~1=P3)和新的ms
